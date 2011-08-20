@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pt" lang="pt" xmlns:fb="http://www.facebook.com/2008/fbml" >
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+        <meta name="description" content="Grepolis - O jogo de browser passado na Antiguidade. Construa cidades magnÃ­ficas, crie alianÃ§as poderosas, utilize o poder dos deuses, conquiste o mundo!" />
+
+        <link rel="shortcut icon" href="http://static.grepolis.com/images/game/start/favicon.ico" type="image/x-icon" />
+
+        <link href="/cache/css/start.css?1303516855" rel="stylesheet" type="text/css" />
+        <link href="/cache/css/common.css?1303516855" rel="stylesheet" type="text/css" />
+	
+		
+	
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+	
+        <script type="text/javascript" src="/cache/ajax.js?1303516849"></script>
+        <script type="text/javascript" src="/cache/humanmsg.js?1303516849"></script>
+        <script type="text/javascript" src="/cache/timestamp.js?1303516849"></script>
+        <script type="text/javascript" src="/cache/start/swfobject.js?1303516848"></script>
+        <script type="text/javascript" src="/cache/common.js?1303516849"></script>
+        <script type="text/javascript" src="/cache/jquery.json-1.3.js?1303516849"></script>
+        <script type="text/javascript" src="/cache/jquery.form.js?1303516849"></script>
+        <script type="text/javascript" src="/cache/jquery.timers-1.1.2.js?1303516849"></script>
+        <script type="text/javascript" src="/cache/ngettext.js?1303516849"></script>
+        <title>Grepolis - O jogo de browser passado na Antiguidade</title>
+
+        <script type="text/javascript">
+	//<![CDATA[
+		var Game = {};
+		Game.server_time = '1303864047';
+		Game.server_gmt_offset = '-7200';
+	//]]>
+        </script>
+    </head>
+    <body id="start">
+        <div id="gamebar">
+            <div id="gamebar_content">
+                <div id="flag1_dropdown" style="display: inline;">
+                    <ul id="flags">
+                        <li style="background:url(http://gamebar.innogames.de/sprite.png) no-repeat 0px -468px; padding-left: 20px; padding-bottom:3px">
+                            <a href="http://de.grepolis.com?ref=gp_flags">grepolis.de</a>
+                        </li>
+                        <li style="background:url(http://gamebar.innogames.de/sprite.png) no-repeat 0px -84px; padding-left: 20px; padding-bottom:3px">
+                            <a href="http://en.grepolis.com?ref=gp_flags">grepolis.net</a>
+                        </li>
+                        <li style="background:url(http://gamebar.innogames.de/sprite.png) no-repeat 0px -724px; padding-left: 20px; padding-bottom:3px">
+                            <a href="http://fr.grepolis.com?ref=gp_flags">grepolis.fr</a>
+                        </li>
+                        <li style="background:url(http://gamebar.innogames.de/sprite.png) no-repeat 0px -116px; padding-left: 20px; padding-bottom:3px">
+                            <a href="http://gr.grepolis.com?ref=gp_flags">grepolis.gr</a>
+                        </li>
+                        <li style="background:url(http://gamebar.innogames.de/sprite.png) no-repeat 0px -52px; padding-left: 20px; padding-bottom:3px">
+                            <a href="http://nl.grepolis.com?ref=gp_flags">grepolis.nl</a>
+                        </li>
+                        <li style="background:url(http://gamebar.innogames.de/sprite.png) no-repeat 0px -756px; padding-left: 20px; padding-bottom:3px">
+                            <a href="http://es.grepolis.com?ref=gp_flags">grepolis.es</a>
+                        </li>
+                        <li style="background:url(http://gamebar.innogames.de/sprite.png) no-repeat 0px -660px; padding-left: 20px; padding-bottom:3px">
+                            <a href="http://it.grepolis.com?ref=gp_flags">grepolis.it</a>
+                        </li>
+                        <li style="background:url(http://gamebar.innogames.de/sprite.png) no-repeat 0px -340px; padding-left: 20px; padding-bottom:3px">
+                            <a href="http://ro.grepolis.com?ref=gp_flags">grepolis.ro</a>
+                        </li>
+                        <li style="background:url(http://gamebar.innogames.de/sprite.png) no-repeat 0px -404px; padding-left: 20px; padding-bottom:3px">
+                            <a href="http://se.grepolis.com?ref=gp_flags">grepolis.se</a>
+                        </li>
+                        <li style="background:url(http://gamebar.innogames.de/sprite.png) no-repeat 0px -148px; padding-left: 20px; padding-bottom:3px">
+                            <a href="http://cz.grepolis.com?ref=gp_flags">grepolis.cz</a>
+                        </li>
+                        <li style="background:url(http://gamebar.innogames.de/sprite.png) no-repeat 0px -564px; padding-left: 20px; padding-bottom:3px">
+                            <a href="http://pl.grepolis.com?ref=gp_flags">grepolis.pl</a>
+                        </li>
+                        <li style="background:url(http://gamebar.innogames.de/sprite.png) no-repeat 0px -212px; padding-left: 20px; padding-bottom:3px">
+                            <a href="http://pt.grepolis.com?ref=gp_flags">grepolis.pt</a>
+                        </li>
+                        <li style="background:url(http://gamebar.innogames.de/sprite.png) no-repeat 0px -500px; padding-left: 20px; padding-bottom:3px">
+                            <a href="http://hu.grepolis.com?ref=gp_flags">grepolis.hu</a>
+                        </li>
+                        <li style="background:url(http://gamebar.innogames.de/sprite.png) no-repeat 0px -180px; padding-left: 20px; padding-bottom:3px">
+                            <a href="http://sk.grepolis.com?ref=gp_flags">grepolis.sk</a>
+                        </li>
+                        <li style="background:url(http://gamebar.innogames.de/sprite.png) no-repeat 0px -596px; padding-left: 20px; padding-bottom:3px">
+                            <a href="http://dk.grepolis.com?ref=gp_flags">grepolis.dk</a>
+                        </li>
+                        <li style="background:url(http://gamebar.innogames.de/sprite.png) no-repeat 0px -276px; padding-left: 20px; padding-bottom:3px">
+                            <a href="http://ru.grepolis.com?ref=gp_flags">grepolis.ru</a>
+                        </li>
+                        <li style="background:url(http://gamebar.innogames.de/sprite.png) no-repeat 0px -532px; padding-left: 20px; padding-bottom:3px">
+                            <a href="http://no.grepolis.com?ref=gp_flags">grepolis.no</a>
+                        </li>
+                        <li style="background:url(http://gamebar.innogames.de/sprite.png) no-repeat 0px -1076px; padding-left: 20px; padding-bottom:3px">
+                            <a href="http://jp.grepolis.com?ref=gp_flags">grepolis.jp</a>
+                        </li>
+                        <li style="background:url(http://gamebar.innogames.de/sprite.png) no-repeat 0px -244px; padding-left: 20px; padding-bottom:3px">
+                            <a href="http://kr.grepolis.com?ref=gp_flags">grepolis.kr</a>
+                        </li>
+                        <li style="background:url(http://gamebar.innogames.de/sprite.png) no-repeat 0px -372px; padding-left: 20px; padding-bottom:3px">
+                            <a href="http://br.grepolis.com/?ref=gp_flags">grepolis.br</a>
+                        </li>
+                    </ul>
+                    <a href="#" onclick="javascript:toggle_visibility('flags')">
+                        <img src="http://gamebar.innogames.de/free/pt.gif" alt="pt" />
+                        <img src="http://gamebar.innogames.de/drop.png" alt="" />
+                    </a>
+                </div>
+                <a href="http://www.tribos.com.pt?ref=gp_gamebar" target="_blank">Tribos</a> - 
+                <a href="http://www.the-west.com.pt?ref=gp_gamebar" target="_blank">The West</a> - 
+                <a href="http://innogames.de?ref=gp_gamebar" target="_blank">InnoGames</a>
+            </div>
+        </div>
+        <div id="page_container">
+            <h1>
+                <a id="grepolis_startpage_link" href="/">
+                    <span>GREPOLIS</span>
+                </a>
+            </h1>
+            <noscript>
+                <p style="background-color:#c00; font-weight:bold; color:#fff; text-align:center; font-size:2em;">Tem de activar o Javascript.</p>
+            </noscript>
+            <div id="main">
+                <script type="text/javascript">
+//<![CDATA[
+	//]]>
+                </script>				
+                <div id="content">
+                    <div id="content_top"></div>
+                    <div id="content_main">
+                        <div id="screenshots-target"></div>
+                    </div>
+                    <div id="content_bottom">
+                        <div id="imprint" >
+                            <div id="imprint_links">Â© 2009-2011 InnoGames GmbH |
+                                <a target="_blank" href="http://legal.innogames.de/?type=agb&amp;game=grepo&amp;market_id=pt">Termos e condiÃ§Ãµes gerais</a> |
+                                <a target="_blank" href="http://legal.innogames.de/?type=privacy&amp;game=grepo&amp;market_id=pt">ProtecÃ§Ã£o de dados</a> |
+                                <a href="http://legal.innogames.de/?type=imprint&amp;game=grepo&amp;market_id=pt">Contacto</a>
+                            </div>
+                            <div id="icons">
+                                <a target="_blank" title="YouTube" href="http://www.youtube.com/watch?v=1wemrGq1UC0">
+                                    <img src="http://static.grepolis.com/images/start/logos/youtube_24px.png" alt="Youtube" />
+                                </a>
+                                <a target="_blank" title="Facebook" href="http://facebook.grepolis.com">
+                                    <img src="http://static.grepolis.com/images/start/logos/facebook_24px.png" alt="Facebook" />
+                                </a>
+                                <a target="_blank" title="Twitter" href="http://www.twitter.com/grepolis">
+                                    <img src="http://static.grepolis.com/images/start/logos/twitter_24px.png" alt="Twitter" />
+                                </a>
+                            </div>
+                        </div>					
+                    </div>
+                    <div id="headlinetext">Jogue agora gratuitamente!</div>
+                </div>
+                <div id="flash-zeus"></div>
+                <script type="text/javascript">
+					//<![CDATA[
+						$(document).ready(function(){
+							swfobject.embedSWF('/images/start/zeus.swf', 'flash-zeus', '254', '334', '8.0.0', null, null, {'wmode':'transparent'});
+						});
+					//]]>
+                </script>
+            </div>
+        </div>
+		
+	
+	
+	
+        <script type="text/javascript">
+				var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+				document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        </script>
+        <script type="text/javascript">
+				try {
+					var pageTracker = _gat._getTracker("UA-13215943-13");
+					pageTracker._trackPageview();
+				} catch(err) {}
+        </script>
+        <table class="popup" id="popup_div" cellpadding="0" cellspacing="0">
+            <tr class="popup_top">
+                <td class="popup_top_left"></td>
+                <td class="popup_top_middle"></td>
+                <td class="popup_top_right"></td>
+            </tr>
+            <tr>
+                <td class="popup_middle_left"></td>
+                <td class="popup_middle_middle" id="popup_content"></td>
+                <td class="popup_middle_right"></td>
+            </tr>
+            <tr class="popup_bottom">
+                <td class="popup_bottom_left"></td>
+                <td class="popup_bottom_middle"></td>
+                <td class="popup_bottom_right"></td>
+            </tr>
+        </table>
+    </body>
+</html>

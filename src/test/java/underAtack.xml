@@ -1,0 +1,840 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+        <meta name="description" content="Grepolis - O jogo de browser passado na Antiguidade. Construa cidades magníficas, crie alianças poderosas, utilize o poder dos deuses, conquiste o mundo!" />
+        <title>Grepolis - Assíria</title>
+        <link rel="shortcut icon" href="http://static.grepolis.com/images/game/start/favicon.ico" type="image/x-icon" />
+
+        <link href="/cache/merged.css?1303517297" rel="stylesheet" type="text/css" />
+        <link href="/cache/css/dialog.css?1303517297" rel="stylesheet" type="text/css" />
+					
+		
+        <script src="/js/template.js" type="text/javascript"></script>
+
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+		
+        <script type="text/javascript" src="/cache/merged.js?1304593864"></script>
+        <script type="text/javascript" src="/cache/game/player_hint.js?1304593868"></script>
+        <script type="text/javascript" src="/cache/game/building_order_mouse_popup.js?1304593868"></script>
+        <script type="text/javascript" src="/cache/game/command_info.js?1304593866"></script>
+        <script type="text/javascript" src="/cache/game/conqueror_info.js?1304593866"></script>
+        <script type="text/javascript" src="/cache/game/unit_overview.js?1304593868"></script>
+        <script type="text/javascript" src="/cache/game/building_animation.js?1304593868"></script>
+        <script type="text/javascript" src="/cache/game/build_tab.js?1304593869"></script>
+    </head>
+    
+    <body>	
+			
+        <script type="text/javascript">
+		//<![CDATA[
+		    
+		    var Game = {};
+			Game.csrfToken = '44059048f44';
+			Game.img = function(want_static){
+				return false === want_static ? '/images' : 'http://static.grepolis.com/images';
+			}
+			Game.controller = 'index';
+			Game.townId = '40764';
+			Game.alliance_id = '18';
+			Game.player_id = '43543';
+			Game.player_name = 'felipelo';
+			Game.server_time = '1307973707';
+			Game.server_gmt_offset = '10800';
+
+			Layout.displayServerTime();
+
+			$(document).ready(function() {
+				GameData.add({map_size : 1000});
+
+				PopupFactory.addTexts({
+					curator_info : 'O administrador ajuda-o a desenvolver e gerir um vasto império. Permite-lhe dar mais ordens de construção e prepara-lhe um grande número de resumos.',
+					trader_info : 'O mercador optimiza os seus ciclos económicos e permite aumentar 30% a sua produção de recursos.',
+					priest_info : 'A alta sacerdotisa tem uma relação particularmente boa com os deuses. Ela aumenta a sua produção de favores 50% e apoia as suas unidades míticas, que são 20% mais fortes em combate.',
+					commander_info : 'O comandante goza da máxima consideração no seio das suas tropas. Ele consegue aumentar ainda mais a motivação das suas tropas. Como tal, as unidades terrestres são 20% mais fortes em combate.',
+					captain_info : 'O capitão é um marinheiro experiente que já derrotou muitas frotas inimigas. A sua experiência é um trunfo precioso para a sua força de combate naval. As unidades navais são 20% mais fortes em combate e os seus produtos das trocas comerciais chegam duas vezes mais depressa às outras ilhas.'
+				});
+				
+				Layout.determineDisabledPowers();
+				PopupFactory.init();
+				
+				PopupFactory.addTexts({
+					wood_production : "<h4>Madeira</h4><span id=\"production_wood_text\">Produção por hora: 426</span><br />As árvores crescem mais rapidamente nesta ilha do que noutras, o que significa que a sua serração consegue produzir mais madeira.",
+					stone_production : "<h4>Pedra</h4><span id=\"production_stone_text\">Produção por hora: 275</span><br />Não existem depósitos de pedra particularmente grandes nesta ilha, o que significa que a produção da sua pedreira é inferior à das outras.",
+					iron_production : "<h4>Moedas de prata</h4><span id=\"production_iron_text\">Produção por hora: 350</span>",
+					favor_production : "<h4>Favor</h4><ul><li>Zeus: 224 - Produção por hora: 17.2</li><li>Posídon: 240 - Produção por hora: 13.9</li><li>Hera: 68 - Produção por hora: 14.1</li><li>Atena: 500 - Produção por hora: 10.0</li></ul>"
+				});
+
+				Layout.initializePowerPopups([]);
+
+				$("#wood").setPopup("wood_production");
+				$("#stone").setPopup("stone_production");
+				$("#iron").setPopup("iron_production");
+				$("#favor").setPopup("favor_production");
+			
+				$('#storage').setPopup("storage_info");
+				$('#pop').setPopup("population_info");
+			
+				$(".curator_info").setPopup("curator_info");
+				$(".commander_info").setPopup("commander_info");
+				$('.captain_info').setPopup("captain_info");
+				$('.priest_info').setPopup("priest_info");
+				$('.trader_info').setPopup("trader_info");
+				
+				$('.prev_city').setPopup('prev_city');
+				$('.next_city').setPopup('next_city');
+				$('.city_list').setPopup('city_list');
+				$('#town_name_href').setPopup('change_city_name');
+				$('#save_city_name').setPopup('save_city_name');
+				$('#server_time').mousePopup(new MousePopup('Hora do servidor'));
+				$('.town_overviews').mousePopup(new MousePopup('Visualizações'));
+				$('.memo_icon').mousePopup(new MousePopup('Notas'));
+				$('.town_group_list').mousePopup(new MousePopup('Lista de grupos'));
+				
+				Picomap.initialize(539, 548, "/images/game/minimap/backgrounds/", 1307973707);
+
+				Layout.initializeResourcesProductionCounter();
+				Layout.initializeOverviewDropDown();
+
+						
+						
+									Layout.blink($('#new_reports'));
+							});
+		
+			Layout.resources = {
+				wood: 11466,
+				stone: 6984,
+				iron: 25500			};
+			Layout.production = {
+				wood: 426,
+				stone: 275,
+				iron: 350			};
+			Layout.storage_volume = 25500;
+			Layout.max_favor = 500;
+			Layout.population = 778;
+			Layout.favor = 224;
+			Layout.current_god_favor_production = 17.2;
+			Layout.favor_production = {"zeus":{"current":224,"production":17.2,"god":"Zeus","current_exact":224.597871,"production_exact":17.2046505},"poseidon":{"current":240,"production":13.9,"god":"Pos\u00eddon","current_exact":240.253447,"production_exact":13.8564065},"hera":{"current":68,"production":14.1,"god":"Hera","current_exact":68.7929195,"production_exact":14.1421356},"athena":{"current":500,"production":10,"god":"Atena","current_exact":500,"production_exact":10}};
+			Layout.player_id = 43543
+			TownInfo.espionage_researched = true;
+			TownInfo.market_level = 30;
+		//]]>
+        </script>
+
+	    
+        <div id="box">
+            <div id="menu">
+                <div id="picomap_canvas">
+                    <div id="picomap">
+                        <span id="picomap_islands_layer">
+                        </span>
+                        <span id="picomap_towns_layer">
+                        </span>
+                    </div>
+                    <a href="/game/map?action=index&amp;town_id=40764&amp;h=44059048f44">
+                        <span>Map</span>
+                    </a>
+                </div>
+                <div id="links">
+                    <ul>
+                        <li id="link_index">
+                            <a href="/game/index?town_id=40764">Visão da cidade</a>
+                        </li>
+                        <li>
+                            <a href="/game/message?action=index&amp;town_id=40764&amp;h=44059048f44">Mensagens 
+                                <span id="new_messages" style="display:none;" class="message_icon"></span>
+                            </a>
+                        </li>
+                        <li id="link_report">
+                            <a href="/game/report?action=index&amp;town_id=40764&amp;h=44059048f44">Relatórios 
+                                <span id="new_reports" style="background-image: url(http://static.grepolis.com/images/game/report/new.png);" class="message_icon"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/game/alliance?action=index&amp;town_id=40764&amp;h=44059048f44">Aliança</a>
+                        </li>
+                        <li>
+                            <a href="/game/alliance?action=forum&amp;town_id=40764&amp;h=44059048f44">Fórum aliança									
+                                <span id="new_post" style="background-image: url(http://static.grepolis.com/images/game/forum/new_post.png);" class="new_post"></span>
+                            </a> 
+                        </li>
+                        <li>
+                            <a href="/game/player?action=index&amp;town_id=40764&amp;h=44059048f44">Configurações</a>
+                        </li>
+                        <li>
+                            <a href="/game/player_profile?action=index&amp;town_id=40764&amp;h=44059048f44">Perfil</a>
+                        </li>
+                        <li id="link_ranking">
+                            <a href="/game/ranking?rank=667&amp;town_id=40764">Classificação (667.)</a>
+                        </li>
+                        <li>
+                            <a href="http://wiki.pt.grepolis.com" target="_blank">Ajuda</a>
+                        </li>
+                        <li>
+                            <a href="http://forum.pt.grepolis.com" target="_blank">Fórum</a>
+                        </li>
+                        <li>
+                            <a href="/game/premium_features?action=index&amp;town_id=40764&amp;h=44059048f44">Premium</a>
+                        </li>
+                        <li>
+                            <a href="#" onclick="return submit_post('player', 'logout')">Sair</a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="advisers">
+                    <a href="/game/premium_features?action=index&amp;town_id=40764&amp;h=44059048f44">
+                        <span id="curator" class="adviser passive curator_info"></span>
+                        <span id="trader" class="adviser passive trader_info"></span>
+                        <span id="priest" class="adviser passive priest_info"></span>
+                        <span id="commander" class="adviser passive commander_info"></span>
+                        <span id="captain" class="adviser passive captain_info"></span>
+                    </a>
+                </div>
+            </div>
+            <div id="main_area">
+                <div id="header">
+                    <a href="/game/town_overviews?action=command_overview&amp;town_id=40764&amp;h=44059048f44">
+                        <span id="game_incoming" class="bold">4</span>
+                    </a>
+                    <div id="arrows_citynames">
+                        <a class="prev_city game_arrow_left" href="/game/index?login=1&amp;town_id=p40764"></a>
+                        <a class="next_city game_arrow_right" href="/game/index?login=1&amp;town_id=n40764"></a>
+                        <a class="city_list" onclick="Layout.toggleTownList();" href="javascript:void(0)" ></a>
+                        <a class="town_group_list" onclick="Layout.toggleTownGroupList('index', '');" href="javascript:void(0)" ></a>
+                    </div>
+                    <div class="town_overviews">
+                        <a class="overview" href="/game/town_overviews?action=index&amp;town_id=40764&amp;h=44059048f44" ></a>
+                    </div>
+                    <form id="town_name" class="bold" action="">
+                        <span id="town_name_span_text">
+                            <a href="javascript:void(0)" onclick="Layout.changeTownName()" id="town_name_href">Assíria</a>
+                        </span>
+                        <span id="town_name_span_input" style="display:none">
+                            <input type="text" id="town_name_input" value="Assíria" maxlength="20" /> 
+                            <img src="http://static.grepolis.com/images/game/layout/town_name_save.png" alt="" id="save_city_name" onclick="Layout.saveTownName()" style="cursor:pointer" />
+                        </span>
+                    </form>
+                    <div id="town_list" style="display:none;"></div>
+                    <div id="res" class="bold">
+                        <a id="wood" href="/game/building_lumber?action=index&amp;town_id=40764&amp;h=44059048f44">
+                            <span>
+                                <span class="res_plenty"></span>
+                            </span>
+                            <span id="wood_count">11466</span>
+                        </a>
+                        <a id="stone" href="/game/building_stoner?action=index&amp;town_id=40764&amp;h=44059048f44">
+                            <span>
+                                <span class="res_rare"></span>
+                            </span>
+                            <span id="stone_count">6984</span>
+                        </a>
+                        <a id="iron" class="resources_full" href="/game/building_ironer?action=index&amp;town_id=40764&amp;h=44059048f44">
+                            <span></span>
+                            <span id="iron_count">25500</span>
+                        </a>
+                        <a id="storage" href="/game/building_storage?action=index&amp;town_id=40764&amp;h=44059048f44">
+                            <span></span>25500
+                        </a>
+                        <a id="pop"  href="/game/building_farm?action=index&amp;town_id=40764&amp;h=44059048f44">
+                            <span></span>
+                            <span id="pop_current">778</span>
+                        </a>
+                        <a id="favor"  href="/game/building_temple?action=index&amp;town_id=40764&amp;h=44059048f44" >
+                            <span></span>
+                            <span id="favor_text">224</span>
+                        </a>
+                        <div id="god_mini" class="god_mini zeus" ></div>
+                    </div>
+                    <div id="bar_overflow">
+                        <div id="bar_wrapper">
+                            <div id="bar_content">
+                            </div>					
+                        </div>
+                    </div>
+                </div>
+                <div id="content_box">
+                    <div id="content" >
+												
+                        <script type="text/javascript">
+//<![CDATA[
+    GameData.add({units  : {"militia":{"id":"militia","attack_type":"pierce","attack":2,"def_hack":6,"def_pierce":8,"def_distance":4,"speed":0,"resources":null,"favor":0,"population":0,"kill_points":0,"build_time":1,"god_id":null,"research_dependencies":null,"building_dependencies":null,"description":"Mil\u00edcia","name":"Mil\u00edcia"},"sword":{"attack_type":"hack","attack":5,"def_hack":14,"def_pierce":8,"def_distance":30,"booty":16,"speed":8,"resources":{"wood":95,"stone":0,"iron":85},"favor":0,"population":1,"kill_points":1,"build_time":540,"god_id":null,"research_dependencies":[],"building_dependencies":null,"id":"sword","description":"Os guerreiros com espada formam a defesa b\u00e1sica da sua cidade: fracos no ataque, excelentes na defesa contra armas de arremesso e bons contra armas de impacto, s\u00e3o uma unidade pouco dispendiosa.","name":"Espadachim"},"slinger":{"attack_type":"distance","attack":23,"def_hack":7,"def_pierce":8,"def_distance":2,"booty":8,"speed":14,"resources":{"wood":55,"stone":100,"iron":40},"favor":0,"population":1,"kill_points":1,"build_time":600,"god_id":null,"research_dependencies":["slinger"],"building_dependencies":null,"id":"slinger","name":"Fundibul\u00e1rio","description":"Os fundibul\u00e1rios s\u00e3o uma boa unidade de ataque. Excelentes a atacar, fracos a defender, s\u00e3o uma unidade pouco dispendiosa e r\u00e1pida."},"archer":{"attack_type":"distance","attack":8,"def_hack":6,"def_pierce":25,"def_distance":12,"booty":24,"speed":12,"resources":{"wood":120,"stone":0,"iron":75},"favor":0,"population":1,"kill_points":1,"build_time":570,"god_id":null,"research_dependencies":["archer"],"building_dependencies":null,"id":"archer","name":"Arqueiro","description":"Os arqueiros desempenham um importante papel na defesa. S\u00e3o muito fortes, em especial contra armas de corte. N\u00e3o contribuem muito para a vit\u00f3ria num ataque, mas em contrapartida conseguem transportar um saque volumoso."},"hoplite":{"attack_type":"pierce","attack":16,"def_hack":18,"def_pierce":12,"def_distance":7,"booty":8,"speed":6,"resources":{"wood":0,"stone":75,"iron":150},"favor":0,"population":1,"kill_points":1,"build_time":690,"god_id":null,"research_dependencies":["hoplite"],"building_dependencies":null,"id":"hoplite","name":"Hoplita","description":"Os hoplitas podem ser utilizados com \u00eaxito de forma defensiva e ofensiva. A sua armadura pesada protege-os na perfei\u00e7\u00e3o contra armas de impacto e de corte, embora reduza a sua velocidade."},"rider":{"attack_type":"hack","attack":55,"def_hack":18,"def_pierce":1,"def_distance":24,"booty":72,"speed":22,"resources":{"wood":240,"stone":120,"iron":360},"favor":0,"population":3,"kill_points":3,"build_time":2160,"god_id":null,"research_dependencies":["rider"],"building_dependencies":{"barracks":10},"id":"rider","name":"Cavaleiro","description":"Os cavaleiros s\u00e3o uma boa unidade de ataque. S\u00e3o r\u00e1pidos, fortes e conseguem transportar grandes cargas. In\u00fateis na defesa, s\u00e3o particularmente vulner\u00e1veis \u00e0s armas de corte."},"chariot":{"attack_type":"pierce","attack":56,"def_hack":76,"def_pierce":16,"def_distance":56,"booty":64,"speed":18,"resources":{"wood":200,"stone":440,"iron":320},"favor":0,"population":4,"kill_points":4,"build_time":2880,"god_id":null,"research_dependencies":["chariot"],"building_dependencies":{"barracks":15},"id":"chariot","name":"Biga","description":"As bigas podem ser utilizadas de forma defensiva e ofensiva. S\u00e3o muito fortes contra armas de arremesso e de impacto."},"catapult":{"attack_type":"distance","attack":100,"def_hack":30,"def_pierce":30,"def_distance":30,"booty":400,"speed":1,"resources":{"wood":1200,"stone":1200,"iron":1200},"favor":0,"population":15,"kill_points":15,"build_time":10800,"god_id":null,"research_dependencies":["catapult"],"building_dependencies":null,"id":"catapult","name":"Catapulta","description":"A catapulta danifica a muralha inimiga e reduz a for\u00e7a defensiva dessa cidade."},"minotaur":{"attack_type":"hack","attack":420,"def_hack":675,"def_pierce":300,"def_distance":560,"booty":480,"speed":10,"resources":{"wood":1400,"stone":600,"iron":3100},"favor":202,"population":30,"kill_points":30,"build_time":8100,"god_id":"zeus","research_dependencies":[],"building_dependencies":{"temple":10},"id":"minotaur","name":"Minotauro","description":"Os minotauros s\u00e3o criaturas enormes, metade homem, metade touro. Os seus golpes poderosos com o machado despeda\u00e7am qualquer escudo, enquanto a sua enorme resist\u00eancia os converte em advers\u00e1rios dif\u00edceis de derrotar."},"manticore":{"attack_type":"pierce","attack":945,"def_hack":170,"def_pierce":225,"def_distance":505,"booty":360,"speed":22,"resources":{"wood":4400,"stone":3000,"iron":3400},"favor":405,"population":45,"kill_points":45,"build_time":16200,"god_id":"zeus","research_dependencies":[],"building_dependencies":{"temple":15},"id":"manticore","flying":true,"name":"Manticora","description":"As manticoras t\u00eam a cabe\u00e7a de um le\u00e3o, as asas de um drag\u00e3o e a cauda de um escorpi\u00e3o. Mergulham do c\u00e9u e agarram a sua presa com as garras, ou ferem-na de morte com o seu gigantesco ferr\u00e3o venenoso. As manticoras conseguem voar para outras ilhas sem a ajuda de navios de transporte."},"zyklop":{"attack_type":"distance","attack":756,"def_hack":945,"def_pierce":10,"def_distance":1310,"booty":320,"speed":8,"resources":{"wood":2000,"stone":4200,"iron":3360},"favor":360,"population":40,"kill_points":40,"build_time":14340,"god_id":"poseidon","research_dependencies":[],"building_dependencies":{"temple":12},"id":"zyklop","name":"Ciclope","description":"Os ciclopes s\u00e3o gigantes de um s\u00f3 olho que atiram pedregulhos aos seus inimigos. Na defesa apenas s\u00e3o vulner\u00e1veis a armas de corte."},"harpy":{"attack_type":"hack","attack":266,"def_hack":105,"def_pierce":70,"def_distance":1,"booty":340,"speed":25,"resources":{"wood":1600,"stone":400,"iron":1360},"favor":130,"population":14,"kill_points":14,"build_time":5040,"god_id":"hera","research_dependencies":[],"building_dependencies":{"temple":5},"id":"harpy","flying":true,"name":"Harpia","description":"Muitos agricultores falam de criaturas metade ave, metade mulher que mergulham do c\u00e9u em alguns dias de tempestade. Agarram a sua presa num abrir e fechar de olhos antes de desaparecerem novamente \u00e0 mesma velocidade. As harpias conseguem voar para outras ilhas sem a ajuda de navios de transporte."},"medusa":{"attack_type":"pierce","attack":425,"def_hack":625,"def_pierce":435,"def_distance":375,"booty":400,"speed":6,"resources":{"wood":1500,"stone":3800,"iron":2200},"favor":210,"population":18,"kill_points":18,"build_time":11250,"god_id":"hera","research_dependencies":[],"building_dependencies":{"temple":10},"id":"medusa","name":"Medusa","description":"Por mais corajoso que seja, qualquer guerreiro que arrisque olhar para os olhos da Medusa sente os seus bra\u00e7os e pernas a ficarem rijos antes de a criatura serpenteante esmagar o guerreiro petrificado."},"centaur":{"attack_type":"distance","attack":156,"def_hack":150,"def_pierce":450,"def_distance":60,"booty":200,"speed":18,"resources":{"wood":1740,"stone":300,"iron":700},"favor":100,"population":12,"kill_points":12,"build_time":4095,"god_id":"athena","research_dependencies":[],"building_dependencies":{"temple":4},"id":"centaur","name":"Centauro","description":"Um centauro \u00e9 um guerreiro com a metade inferior do corpo de um cavalo. O centauro passa rapidamente a galope pelos seus inimigos, dispara setas certeiras e desaparece novamente \u00e0 mesma velocidade. Os centauros s\u00e3o excelentes na defesa contra armas de corte."},"pegasus":{"attack_type":"pierce","attack":100,"def_hack":900,"def_pierce":250,"def_distance":300,"booty":160,"speed":35,"resources":{"wood":2800,"stone":360,"iron":80},"favor":180,"population":20,"kill_points":20,"build_time":7200,"god_id":"athena","research_dependencies":[],"building_dependencies":{"temple":12},"id":"pegasus","flying":true,"name":"P\u00e9gaso","description":"Um p\u00e9gaso \u00e9 um cavalo alado que mergulha do c\u00e9u para ajudar a cidade quando a batalha parece perdida. \u00c9 excelente na defesa contra armas de impacto. Os p\u00e9gasos conseguem voar para outras ilhas sem a ajuda de navios de transporte."},"big_transporter":{"attack":20,"defense":1,"transport":null,"speed":8,"resources":{"wood":500,"stone":500,"iron":400},"favor":0,"population":7,"kill_points":7,"build_time":4800,"god_id":null,"research_dependencies":[],"building_dependencies":null,"id":"big_transporter","capacity":20,"name":"Barco de transporte","description":"Os barcos de transporte conseguem transportar as pr\u00f3prias tropas entre duas ilhas. Numa batalha, n\u00e3o s\u00e3o capazes de danificar unidades navais ou terrestres."},"bireme":{"attack":24,"defense":160,"transport":null,"speed":15,"resources":{"wood":800,"stone":700,"iron":180},"favor":0,"population":8,"kill_points":8,"build_time":4950,"god_id":null,"research_dependencies":["bireme"],"building_dependencies":null,"id":"bireme","capacity":0,"name":"Birreme","description":"As birremes s\u00e3o navios poderosos que podem ser utilizados de forma particularmente \u00fatil na defesa."},"attack_ship":{"attack":200,"defense":60,"transport":null,"speed":13,"resources":{"wood":1300,"stone":300,"iron":800},"favor":0,"population":10,"kill_points":10,"build_time":7200,"god_id":null,"research_dependencies":["attack_ship"],"building_dependencies":null,"id":"attack_ship","capacity":0,"name":"Navio-farol","description":"Os navios-farol incendeiam os navios inimigos. Esta arma \u00e9 muito forte num ataque, mas praticamente in\u00fatil a defender."},"demolition_ship":{"attack":20,"defense":1,"transport":null,"speed":5,"resources":{"wood":500,"stone":750,"iron":150},"favor":0,"population":8,"kill_points":8,"build_time":2000,"god_id":null,"research_dependencies":["demolition_ship"],"building_dependencies":null,"id":"demolition_ship","capacity":0,"name":"Navio incendi\u00e1rio","description":"Os navios incendi\u00e1rios s\u00e3o navios em chamas que se aproximam das frotas inimigas e as incendeiam. Apenas o defensor pode utilizar navios incendi\u00e1rios. Cada navio incendi\u00e1rio destr\u00f3i um navio inimigo e em seguida \u00e9 consumido pelo fogo. Os navios incendi\u00e1rios s\u00e3o muito lentos."},"small_transporter":{"attack":20,"defense":1,"transport":null,"speed":15,"resources":{"wood":800,"stone":0,"iron":400},"favor":0,"population":5,"kill_points":5,"build_time":3600,"god_id":null,"research_dependencies":["small_transporter"],"building_dependencies":null,"id":"small_transporter","capacity":10,"name":"Navio de transporte r\u00e1pido","description":"Os navios de transporte r\u00e1pidos conseguem transportar unidades terrestres entre ilhas. S\u00e3o mais r\u00e1pidos do que os barcos de transporte, mas n\u00e3o t\u00eam tanto espa\u00e7o."},"trireme":{"attack":180,"defense":250,"transport":null,"speed":9,"resources":{"wood":2000,"stone":1300,"iron":900},"favor":0,"population":16,"kill_points":16,"build_time":7200,"god_id":null,"research_dependencies":["trireme"],"building_dependencies":null,"id":"trireme","capacity":0,"name":"Trirreme","description":"As trirremes s\u00e3o os navios de guerra mais poderosos. Podem ser utilizadas em ataques navais e na defesa."},"colonize_ship":{"attack":0,"defense":500,"transport":null,"speed":3,"resources":{"wood":10000,"stone":10000,"iron":10000},"favor":0,"population":170,"kill_points":170,"build_time":32400,"god_id":null,"research_dependencies":["colonize_ship"],"building_dependencies":{"docks":20,"academy":22},"id":"colonize_ship","capacity":0,"name":"Navio colonizador","description":"Os navios colonizadores conseguem conquistar cidades estrangeiras. A sua cidade necessita igualmente de um n\u00edvel cultural suficientemente alto para poder conquistar uma cidade estrangeira. Os navios colonizadores n\u00e3o combatem e s\u00e3o muito lentos."},"sea_monster":{"attack":1000,"defense":715,"transport":null,"speed":8,"resources":{"wood":5400,"stone":2800,"iron":3800},"favor":400,"population":50,"kill_points":50,"build_time":21000,"god_id":"poseidon","research_dependencies":[],"building_dependencies":{"temple":22},"id":"sea_monster","capacity":0,"name":"Hidra","description":"N\u00e3o h\u00e1 nenhuma onda, tempestade ou inimigo que um marinheiro tema mais do que o ataque de uma hidra. O monstro de nove cabe\u00e7as ergue-se da \u00e1gua, esmaga navios inteiros nas suas bocas e devora a tripula\u00e7\u00e3o ou arrasta-a para as profundezas do reino de Pos\u00eddon."}}});
+    GameData.add({powers  : {"divine_sign":{"id":"divine_sign","name":"Sinal divino","description":"Um raio de luz atravessa as nuvens, uma biga desce e segue a cidade.","favor":50,"god_id":"zeus","lifetime":0,"temple_level_sum_dependency":1,"effect":"A cidade seleccionada recebe uma biga."},"bolt":{"id":"bolt","name":"Rel\u00e2mpago","description":"Nuvens negras surgem sobre a cidade, um rel\u00e2mpago atroador abate-se fulminante e nada mais resta do que um edif\u00edcio danificado.","favor":200,"god_id":"zeus","lifetime":0,"temple_level_sum_dependency":4,"effect":"Danifica um edif\u00edcio ao acaso na cidade."},"fair_wind":{"id":"fair_wind","name":"Vento favor\u00e1vel","description":"A voz de Zeus ecoa atrav\u00e9s do ar; o vento estica as velas dos navios; as setas e as flechas zumbem com precis\u00e3o na direc\u00e7\u00e3o do inimigo.","favor":250,"god_id":"zeus","lifetime":0,"temple_level_sum_dependency":1,"effect":"As for\u00e7as navais atacantes combatem 10% mais fortes."},"transformation":{"id":"transformation","name":"Ira de Zeus","description":"Zeus rasga o c\u00e9u com raios e atira soldados pelos ares; alguns agarram-se \u00e0s \u00e1rvores, enquanto outros s\u00e3o engolidos pelo c\u00e9u.","favor":300,"god_id":"zeus","lifetime":0,"temple_level_sum_dependency":1,"effect":"Destr\u00f3i 10-30% das unidades terrestres de ataque."},"wedding":{"id":"wedding","name":"Casamento","description":"Nobres chegam de todas as terras em redor com presentes para a filha do rei que se vai casar e para a cidade.","favor":30,"god_id":"hera","lifetime":0,"temple_level_sum_dependency":1,"effect":"A cidade recebe 125 unidades de madeira, 200 unidades de pedra e 200 moedas de prata."},"happiness":{"id":"happiness","name":"Felicidade","description":"\u00c0 noite, Hera coloca um v\u00e9u reconfortante sobre os atarefados trabalhadores e refresca-os suavemente no calor do meio-dia.","favor":120,"god_id":"hera","lifetime":21600,"temple_level_sum_dependency":1,"effect":"Aumenta a produ\u00e7\u00e3o de madeira, pedra e prata 50% durante 6 horas."},"fertility_improvement":{"id":"fertility_improvement","name":"Crescimento da popula\u00e7\u00e3o","description":"Nasceu outro bravo guerreiro. Hera quer bem a esta cidade.","favor":80,"god_id":"hera","lifetime":21600,"temple_level_sum_dependency":1,"effect":"No quartel, todos as recrutas s\u00e3o acelerados 100%, pelo que ser\u00e3o destacados nas pr\u00f3ximas 6 horas."},"desire":{"id":"desire","name":"Saudade","description":"Os bravos guerreiros foram vencidos pela saudade; os seus cora\u00e7\u00f5es j\u00e1 n\u00e3o batem pela guerra, mas sim pelas suas fam\u00edlias e lares.","favor":140,"god_id":"hera","lifetime":0,"temple_level_sum_dependency":1,"effect":"As unidades atacantes navais e terrestres s\u00e3o 10% mais fracas em combate."},"kingly_gift":{"id":"kingly_gift","name":"Oferta real","description":"O mar arrastou madeira para a costa da cidade. Pos\u00eddon mostra o seu lado bondoso.","favor":25,"god_id":"poseidon","lifetime":0,"temple_level_sum_dependency":1,"effect":"A cidade recebe 800 unidades de madeira."},"call_of_the_ocean":{"id":"call_of_the_ocean","name":"Chamamento do oceano","description":"Ondas fortes rebentam na costa; os trabalhadores s\u00e3o invadidos pela necessidade imperiosa de seguirem o chamamento do oceano.","favor":60,"god_id":"poseidon","lifetime":21600,"temple_level_sum_dependency":1,"effect":"No porto, todos as ordens de constru\u00e7\u00e3o s\u00e3o aceleradas 100% e destacadas na horas seguintes."},"earthquake":{"id":"earthquake","name":"Tremor de terra","description":"O ch\u00e3o move-se e estremece e grandes peda\u00e7os da muralha precipitam-se nas profundezas.","favor":350,"god_id":"poseidon","lifetime":0,"temple_level_sum_dependency":1,"effect":"A muralha perde 1-3 n\u00edveis."},"sea_storm":{"id":"sea_storm","name":"Tempestade no mar","description":"Pos\u00eddon ergue-se e as suas ondas embatem furiosamente contra os navios. N\u00e3o \u00e9 um bom dia para os marinheiros.","favor":280,"god_id":"poseidon","lifetime":0,"temple_level_sum_dependency":1,"effect":"Destr\u00f3i 10-30% dos navios-alvo."},"patroness":{"id":"patroness","name":"Deusa patrona","description":"Os bravos soldados ouvem o chamamento e acodem \u00e0 cidade da deusa patrona.","favor":60,"god_id":"athena","lifetime":0,"temple_level_sum_dependency":1,"effect":"A cidade recebe 5 unidades terrestres aleat\u00f3rias."},"wisdom":{"id":"wisdom","name":"Sabedoria","description":"Uma coruja voa em c\u00edrculos sobre as tropas inimigas e envia informa\u00e7\u00f5es sobre a sua for\u00e7a.","favor":140,"god_id":"athena","lifetime":0,"temple_level_sum_dependency":1,"effect":"Recebe um relat\u00f3rio de espionagem sobre tropas inimigas."},"town_protection":{"id":"town_protection","name":"Protec\u00e7\u00e3o da cidade","description":"Atena estende o seu escudo sobre toda a cidade.","favor":130,"god_id":"athena","lifetime":21600,"temple_level_sum_dependency":1,"effect":"A cidade n\u00e3o pode ser afectada por nenhuma for\u00e7a durante 6 horas."},"strength_of_heroes":{"id":"strength_of_heroes","name":"Poder her\u00f3ico","description":"Os soldados s\u00e3o incutidos com poder e coragem. Lan\u00e7am-se corajosamente na direc\u00e7\u00e3o do inimigo soltando gritos ensurdecedores.","favor":200,"god_id":"athena","lifetime":0,"temple_level_sum_dependency":1,"effect":"As unidades terrestres ficam 10% mais fortes na batalha seguinte."}}});
+    GameData.add({buildings  : {"main":{"name":"Senado","image":null,"level":null,"max_level":25,"min_level":1,"requiredBuildings":null,"resources":{"wood":6,"stone":2,"iron":2},"pop":1,"wood_factor":2.15,"stone_factor":2.53,"iron_factor":2.3,"pop_factor":1.5,"hide_factor":null,"points":100,"points_factor":1.1,"build_time":150,"build_time_factor":1.8,"bolt_protected":null,"image_levels":[1,8,16],"dependencies":[],"coordinates":"323,144,317,180,399,213,498,140,482,112,413,85","description":"No senado pode ordenar a constru\u00e7\u00e3o de novos edif\u00edcios ou a expans\u00e3o dos edif\u00edcios existentes. Quanto maior for o n\u00edvel do senado, mais rapidamente ser\u00e1 conclu\u00edda a constru\u00e7\u00e3o.","controller":"building_main"},"hide":{"name":"Gruta","image":null,"level":null,"max_level":10,"min_level":1,"requiredBuildings":null,"resources":{"wood":200,"stone":400,"iron":700},"pop":3,"wood_factor":1.3,"stone_factor":1,"iron_factor":0.9,"pop_factor":0.5,"hide_factor":null,"points":50,"points_factor":1.2,"build_time":210,"build_time_factor":1.456,"bolt_protected":null,"image_levels":[1,4,7],"dependencies":{"main":9,"storage":5},"coordinates":"408,306,394,314,394,332,402,343,420,335,419,314","description":"Na gruta \u00e9 poss\u00edvel destacar espi\u00f5es para observar as cidades inimigas.","controller":"building_hide"},"storage":{"name":"Armaz\u00e9m","image":null,"level":null,"max_level":30,"min_level":1,"requiredBuildings":null,"resources":{"wood":35,"stone":55,"iron":15},"pop":0,"wood_factor":1.52,"stone_factor":1.52,"iron_factor":1.66,"pop_factor":1,"hide_factor":100,"points":13,"points_factor":1.14,"build_time":900,"build_time_factor":1.23,"bolt_protected":null,"image_levels":[1,10,20],"dependencies":[],"storage_factor":200,"storage_pow":1.35399,"coordinates":"307,192,279,210,279,239,371,281,400,259,394,220,355,203,345,209","description":"Os recursos da sua cidade s\u00e3o guardados no armaz\u00e9m. Quanto maior for o n\u00edvel de expans\u00e3o do armaz\u00e9m, mais recursos nele poder\u00e3o ser guardados. Cada n\u00edvel de expans\u00e3o protege 100 unidades de cada recurso contra pilhagens.","controller":"building_storage"},"farm":{"name":"Quinta","image":null,"level":null,"max_level":40,"min_level":1,"requiredBuildings":null,"resources":{"wood":8,"stone":5,"iron":1},"pop":0,"wood_factor":1.87,"stone_factor":2.03,"iron_factor":2.4,"pop_factor":0,"hide_factor":null,"points":15,"points_factor":1.12,"build_time":150,"build_time_factor":1.7,"bolt_protected":null,"image_levels":[1,14,28],"dependencies":[],"farm_pow":1.455,"farm_factor":14,"coordinates":"387,0,443,86,505,123,563,139,599,106,599,0","description":"A quinta abastece os trabalhadores e as tropas com comida. Necessita de expandir a quinta para que a sua cidade possa crescer. Quanto maior for o n\u00edvel de expans\u00e3o da quinta, mais habitantes haver\u00e1 - e mais tropas poder\u00e1 alimentar.","controller":"building_farm"},"place":{"name":"\u00c1gora","image":null,"level":null,"max_level":1,"min_level":1,"requiredBuildings":null,"resources":{"wood":10,"stone":0,"iron":0},"pop":1,"wood_factor":2,"stone_factor":2,"iron_factor":2,"pop_factor":0,"hide_factor":null,"points":30,"points_factor":1.11,"build_time":0.5,"build_time_factor":2.17,"bolt_protected":true,"image_levels":[1,4,7],"dependencies":[],"coordinates":"469,179,446,218,452,238,488,238,496,218","description":"Na \u00e1gora pode obter uma vis\u00e3o geral das suas tropas dentro e fora da cidade. Aqui pode admirar tamb\u00e9m os feitos culturais da sua cidade e planear as pr\u00f3ximas campanhas com o simulador de combate.","controller":"building_place"},"lumber":{"name":"Serra\u00e7\u00e3o","image":null,"level":null,"max_level":40,"min_level":1,"requiredBuildings":null,"resources":{"wood":2.6,"stone":2,"iron":1.49},"pop":1,"wood_factor":1.9,"stone_factor":2.1,"iron_factor":2.1,"pop_factor":1.25,"hide_factor":null,"points":20,"points_factor":1.1,"build_time":60,"build_time_factor":1.9,"bolt_protected":null,"image_levels":[1,14,28],"dependencies":[],"coordinates":"454,357,429,386,451,451,522,462,564,395,519,375","description":"Nos densos bosques fora da sua p\u00f3lis, os seus lenhadores cortam a madeira maci\u00e7a necess\u00e1ria para expandir a sua cidade e abastecer as tropas. Quanto maior for o n\u00edvel de expans\u00e3o da serra\u00e7\u00e3o, mais madeira ser\u00e1 produzida pelos seus trabalhadores.","controller":"building_lumber"},"stoner":{"name":"Pedreira","image":null,"level":null,"max_level":40,"min_level":1,"requiredBuildings":null,"resources":{"wood":1.3,"stone":2.6,"iron":2.4},"pop":1,"wood_factor":2.1,"stone_factor":1.9,"iron_factor":2.1,"pop_factor":1.25,"hide_factor":null,"points":20,"points_factor":1.1,"build_time":150,"build_time_factor":1.62,"bolt_protected":null,"image_levels":[1,14,28],"dependencies":[],"coordinates":"0,178,0,303,66,333,183,312,189,249,66,229,59,178","description":"Na pedreira, os seus trabalhadores extraem a pedra que \u00e9 importante para o desenvolvimento da sua cidade. Quanto maior for o n\u00edvel de expans\u00e3o da pedreira, mais pedra ser\u00e1 extra\u00edda.","controller":"building_stoner"},"ironer":{"name":"Mina de prata","image":null,"level":null,"max_level":40,"min_level":1,"requiredBuildings":null,"resources":{"wood":5,"stone":2,"iron":4},"pop":1,"wood_factor":1.9,"stone_factor":2,"iron_factor":1.8,"pop_factor":1.25,"hide_factor":null,"points":20,"points_factor":1.1,"build_time":300,"build_time_factor":1.41,"bolt_protected":null,"image_levels":[1,14,28],"dependencies":{"lumber":3},"coordinates":"52,12,41,35,85,81,132,56,89,20","description":"Na mina de prata, os seus trabalhadores retiram o precioso min\u00e9rio de prata que \u00e9 utilizado para cunhar as moedas de prata. Quanto maior for o n\u00edvel de expans\u00e3o da mina, mais moedas de prata poder\u00e3o ser cunhadas.","controller":"building_ironer"},"market":{"name":"Mercado","image":null,"level":null,"max_level":30,"min_level":1,"requiredBuildings":null,"resources":{"wood":50,"stone":20,"iron":5},"pop":2,"wood_factor":1.48,"stone_factor":1.62,"iron_factor":1.98,"pop_factor":1.1,"hide_factor":null,"points":100,"points_factor":1.08,"build_time":240,"build_time_factor":1.6,"bolt_protected":null,"image_levels":[1,10,20],"dependencies":{"main":12,"hide":5,"storage":6},"coordinates":"599,159,561,142,504,153,501,183,519,223,554,236,599,233","description":"O mercado d\u00e1-lhe a possibilidade de enviar recursos a outros jogadores. Tamb\u00e9m pode trocar com as aldeias b\u00e1rbaras da sua ilha.","controller":"building_market"},"docks":{"name":"Porto","image":null,"level":null,"max_level":30,"min_level":1,"requiredBuildings":null,"resources":{"wood":400,"stone":200,"iron":100},"pop":4,"wood_factor":0.9,"stone_factor":0.98,"iron_factor":1.1,"pop_factor":1,"hide_factor":null,"points":60,"points_factor":1.1,"build_time":750,"build_time_factor":1.1,"bolt_protected":null,"image_levels":[1,8,16],"dependencies":{"main":14,"lumber":15,"ironer":10},"coordinates":"270,303,166,408,260,462,342,462,400,384","description":"O porto \u00e9 onde expande a sua frota. Aqui pode construir unidades de transporte e de combate. A velocidade a que os navios s\u00e3o conclu\u00eddos pelos trabalhadores do estaleiro depende do n\u00edvel de expans\u00e3o do porto.","controller":"building_docks"},"barracks":{"name":"Quartel","image":null,"level":null,"max_level":30,"min_level":1,"requiredBuildings":null,"resources":{"wood":70,"stone":20,"iron":40},"pop":1,"wood_factor":1.22,"stone_factor":1.67,"iron_factor":1.54,"pop_factor":1.3,"hide_factor":null,"points":30,"points_factor":1.115,"build_time":450,"build_time_factor":1.25,"bolt_protected":null,"image_levels":[1,10,20],"dependencies":{"main":4,"farm":4},"coordinates":"186,96,92,183,133,201,190,207,265,161,260,135","description":"No quartel pode recrutar tropas regulares e unidades m\u00edticas. Quanto maior for o n\u00edvel de expans\u00e3o do quartel, mais rapidamente poder\u00e1 treinar as suas tropas.","controller":"building_barracks"},"wall":{"name":"Muralha","image":null,"level":null,"max_level":25,"min_level":1,"requiredBuildings":null,"resources":{"wood":400,"stone":350,"iron":200},"pop":2,"wood_factor":0,"stone_factor":1,"iron_factor":1.1,"pop_factor":1.16,"hide_factor":null,"points":30,"points_factor":1.12,"build_time":450,"build_time_factor":1.3,"bolt_protected":null,"image_levels":[1,8,16],"dependencies":{"main":7,"stoner":8},"coordinates":"0,151, 26,151, 72,145, 78,170, 87,185, 107,199, 136,206, 170,208, 201,215, 239,210, 243,266, 278,263, 314,274, 350,287, 384,284, 416,270, 442,254, 439,305, 495,332, 529,345, 568,346, 601,342,\n\t\t\t601,368, 566,375, 521,373, 484,363, 433,333, 421,297, 386,307, 348,312, 309,302, 277,290, 230,291, 228,237, 199,239, 169,231, 136,228, 104,227, 77,205, 70,191, 69,168, 28,176, 0,176","catapult_factor":1.05,"catapult_power":0.5,"def_factor_per_level":1.037,"description":"A muralha protege a sua p\u00f3lis das tropas inimigas. Aumenta a sua defesa terrestre e o valor defensivo das suas tropas.","controller":"building_wall"},"academy":{"name":"Academia","image":null,"level":null,"max_level":30,"min_level":1,"requiredBuildings":null,"resources":{"wood":100,"stone":200,"iron":120},"pop":3,"wood_factor":1.21,"stone_factor":1.1,"iron_factor":1.2,"pop_factor":1,"hide_factor":null,"points":60,"points_factor":1.12,"build_time":600,"build_time_factor":1.25,"bolt_protected":null,"image_levels":[1,8,16],"dependencies":{"main":8,"farm":6,"barracks":5},"coordinates":"334,0,293,22,277,76,346,103,402,67,383,16","description":"Pode realizar pesquisas na academia. Grepolis oferece-lhe v\u00e1rias tecnologias que podem fortalecer as suas tropas, tornar mais eficazes as suas capacidades de constru\u00e7\u00e3o ou dar-lhe novas t\u00e9cnicas de combate. Quanto maior for o n\u00edvel de expans\u00e3o da sua academia, mais tecnologias poder\u00e1 descobrir.","controller":"building_academy"},"temple":{"name":"Templo","image":null,"level":null,"max_level":25,"min_level":1,"requiredBuildings":null,"resources":{"wood":500,"stone":900,"iron":600},"pop":5,"wood_factor":0.865,"stone_factor":0.7,"iron_factor":0.82,"pop_factor":1,"hide_factor":null,"points":200,"points_factor":1.08,"build_time":1800,"build_time_factor":1.145,"bolt_protected":null,"image_levels":[1,8,16],"dependencies":{"main":15,"stoner":12,"wall":6},"coordinates":"20,52,2,70,2,124,40,139,85,131,49,57","description":"No templo pode venerar uma divindade da sua prefer\u00eancia. Cada um dos deuses de Grepolis pode lan\u00e7ar diferentes poderes divinos e dar vida a diferentes unidades m\u00edticas. Em ambos os casos, necessitar\u00e1 de um favor divino criado pelo deus venerado no templo. Quanto maior for o n\u00edvel de expans\u00e3o do templo, mais favores divinos lhe ser\u00e3o concedidos pelos deuses.","controller":"building_temple"},"theater":{"name":"Teatro","image":null,"level":null,"max_level":1,"min_level":0,"requiredBuildings":null,"resources":{"wood":8000,"stone":8000,"iron":8000},"pop":60,"wood_factor":2,"stone_factor":2,"iron_factor":2,"pop_factor":1,"hide_factor":null,"points":500,"points_factor":1,"build_time":32400,"build_time_factor":2.17,"bolt_protected":true,"image_levels":[1],"dependencies":{"main":24,"lumber":35,"ironer":32,"docks":5,"academy":5},"coordinates":"154,54,227,81,278,50,273,13,239,1,182,6,154,30","description":"A constru\u00e7\u00e3o de um teatro permite-lhe representar grandes dramas para a popula\u00e7\u00e3o e aumentar assim o valor cultural da sua p\u00f3lis.","controller":"building_theater"},"thermal":{"name":"Termas","image":null,"level":null,"max_level":1,"min_level":0,"requiredBuildings":null,"resources":{"wood":9000,"stone":6000,"iron":9000},"pop":60,"wood_factor":2,"stone_factor":2,"iron_factor":2,"pop_factor":1,"hide_factor":null,"points":500,"points_factor":1,"build_time":32400,"build_time_factor":2.17,"bolt_protected":true,"image_levels":[1],"dependencies":{"main":24,"farm":35,"docks":5,"academy":5},"coordinates":"141,40,143,62,200,87,277,46,276,18,217,0","description":"Na Gr\u00e9cia Antiga dava-se uma grande import\u00e2ncia \u00e0 higiene. A constru\u00e7\u00e3o de termas permite-lhe aumentar n\u00e3o s\u00f3 a sa\u00fade da popula\u00e7\u00e3o, como tamb\u00e9m o n\u00famero total de habitantes 10%.","controller":"building_thermal"},"library":{"name":"Biblioteca","image":null,"level":null,"max_level":1,"min_level":0,"requiredBuildings":null,"resources":{"wood":9500,"stone":7500,"iron":7000},"pop":60,"wood_factor":2,"stone_factor":2,"iron_factor":2,"pop_factor":1,"hide_factor":null,"points":500,"points_factor":1,"build_time":32400,"build_time_factor":2.17,"bolt_protected":true,"image_levels":[1],"dependencies":{"main":24,"academy":20,"docks":5},"coordinates":"203,0,158,23,158,57,195,72,280,39,264,0","description":"Conhecimento \u00e9 poder. Com a constru\u00e7\u00e3o de uma biblioteca, recebe 12 pontos de pesquisa adicionais que pode aplicar na descoberta de novas tecnologias na academia.","controller":"building_library"},"lighthouse":{"name":"Farol","image":null,"level":null,"max_level":1,"min_level":0,"requiredBuildings":null,"resources":{"wood":6000,"stone":10000,"iron":8000},"pop":60,"wood_factor":2,"stone_factor":2,"iron_factor":2,"pop_factor":1,"hide_factor":null,"points":500,"points_factor":1,"build_time":32400,"build_time_factor":2.17,"bolt_protected":true,"image_levels":[1],"dependencies":{"main":24,"docks":20,"academy":5},"coordinates":"6,318,0,412,35,421,73,373,20,317","description":"O Farol de Alexandria foi considerado uma das sete maravilhas do mundo. Com a constru\u00e7\u00e3o de uma vers\u00e3o mais pequena pr\u00f3ximo do porto, a velocidade da sua frota aumenta 15%, uma vez que ele permite melhorar significativamente a navega\u00e7\u00e3o.","controller":"building_lighthouse"},"tower":{"name":"Torre","image":null,"level":null,"max_level":1,"min_level":0,"requiredBuildings":null,"resources":{"wood":8000,"stone":10000,"iron":6000},"pop":60,"wood_factor":2,"stone_factor":2,"iron_factor":2,"pop_factor":1,"hide_factor":null,"points":500,"points_factor":1,"build_time":32400,"build_time_factor":2.17,"bolt_protected":true,"image_levels":[1],"dependencies":{"main":21,"wall":20,"temple":5,"market":5},"coordinates":"511,244,489,264,486,320,501,335,534,340,556,324,559,265,539,246","description":"Uma poderosa torre defensiva aumenta 10% a for\u00e7a defensiva das suas tropas e transforma a sua p\u00f3lis numa fortaleza quase invenc\u00edvel para os atacantes.","controller":"building_tower"},"statue":{"name":"Est\u00e1tua divina","image":null,"level":null,"max_level":1,"min_level":0,"requiredBuildings":null,"resources":{"wood":6000,"stone":10500,"iron":7500},"pop":60,"wood_factor":2,"stone_factor":2,"iron_factor":2,"pop_factor":1,"hide_factor":null,"points":500,"points_factor":1,"build_time":32400,"build_time_factor":2.17,"bolt_protected":true,"image_levels":[1],"dependencies":{"main":21,"temple":12,"market":5},"coordinates":"517,245,500,317,506,332,535,339,551,326,542,249","description":"Os deuses gregos s\u00e3o dif\u00edceis de agradar e exigem muitos sinais da sua venera\u00e7\u00e3o. Com esta est\u00e1tua divina, mostra-lhes a import\u00e2ncia que eles t\u00eam para si e aumenta assim o favor divino produzido no templo.","controller":"building_statue"},"oracle":{"name":"Or\u00e1culo","image":null,"level":null,"max_level":1,"min_level":0,"requiredBuildings":null,"resources":{"wood":6500,"stone":7000,"iron":9500},"pop":60,"wood_factor":2,"stone_factor":2,"iron_factor":2,"pop_factor":1,"hide_factor":null,"points":500,"points_factor":1,"build_time":32400,"build_time_factor":2.17,"bolt_protected":true,"image_levels":[1],"dependencies":{"main":21,"hide":10,"market":5,"temple":5},"coordinates":"494,270,483,316,501,338,549,340,567,316,558,274,529,264","description":"Os espi\u00f5es inimigos s\u00e3o descobertos com a ajuda do or\u00e1culo. Desta forma, sabe quem o espiou e pode preparar-se melhor contra ataques iminentes.","controller":"building_oracle"},"trade_office":{"name":"Casa do mercador","image":null,"level":null,"max_level":1,"min_level":0,"requiredBuildings":null,"resources":{"wood":10500,"stone":7000,"iron":6500},"pop":60,"wood_factor":2,"stone_factor":2,"iron_factor":2,"pop_factor":1,"hide_factor":null,"points":500,"points_factor":1,"build_time":32400,"build_time_factor":1,"bolt_protected":true,"image_levels":[1],"dependencies":{"main":21,"market":15,"temple":5},"coordinates":"519,250,487,278,486,322,558,349,590,321,591,279","description":"Isto aumenta o r\u00e1cio de troca m\u00e1ximo das aldeias b\u00e1rbaras, bem como a capacidade de troca dispon\u00edvel por n\u00edvel de mercado de 500 para 750.","controller":"building_trade_office"}}});
+//]]>
+                        </script>
+                        <script type="text/javascript">
+//<![CDATA[
+	var buildings = {"main":{"name":"Senado","level":25,"order_level":25,"needed_resources":{"wood":5950,"stone":6841,"iron":3233},"pop":8,"pop_tear_down":7},"hide":{"name":"Gruta","level":10,"order_level":10,"needed_resources":{"wood":4065,"stone":3960,"iron":5452},"pop":1,"pop_tear_down":0},"storage":{"name":"Armaz\u00e9m","level":30,"order_level":30,"needed_resources":{"wood":5823,"stone":9151,"iron":4036},"pop":0,"pop_tear_down":0},"farm":{"name":"Quinta","level":40,"order_level":40,"needed_resources":{"wood":7468,"stone":8456,"iron":6682},"pop":0,"pop_tear_down":0},"place":{"name":"\u00c1gora","level":1,"order_level":1,"needed_resources":{"wood":36,"stone":0,"iron":0},"pop":0,"pop_tear_down":0},"lumber":{"name":"Serra\u00e7\u00e3o","level":40,"order_level":40,"needed_resources":{"wood":2713,"stone":4386,"iron":3267},"pop":3,"pop_tear_down":4},"stoner":{"name":"Pedreira","level":40,"order_level":40,"needed_resources":{"wood":2851,"stone":2713,"iron":5264},"pop":3,"pop_tear_down":4},"ironer":{"name":"Mina de prata","level":40,"order_level":40,"needed_resources":{"wood":5218,"stone":3025,"iron":2879},"pop":3,"pop_tear_down":4},"market":{"name":"Mercado","level":30,"order_level":30,"needed_resources":{"wood":7251,"stone":4690,"iron":4037},"pop":3,"pop_tear_down":3},"docks":{"name":"Porto","level":30,"order_level":30,"needed_resources":{"wood":7916,"stone":5209,"iron":3933},"pop":4,"pop_tear_down":4},"barracks":{"name":"Quartel","level":12,"order_level":12,"needed_resources":{"wood":1440,"stone":1305,"iron":1869},"pop":3,"pop_tear_down":2},"wall":{"name":"Muralha","level":25,"order_level":25,"needed_resources":{"wood":360,"stone":8190,"iron":6482},"pop":4,"pop_tear_down":4},"academy":{"name":"Academia","level":30,"order_level":30,"needed_resources":{"wood":5738,"stone":7866,"iron":6653},"pop":3,"pop_tear_down":3},"temple":{"name":"Templo","level":25,"order_level":25,"needed_resources":{"wood":7536,"stone":7924,"iron":7810},"pop":5,"pop_tear_down":5},"theater":[],"thermal":{"name":"Termas","level":1,"order_level":1,"needed_resources":{"wood":32400,"stone":21600,"iron":32400},"pop":60,"pop_tear_down":60},"library":[],"lighthouse":[],"tower":{"name":"Torre","level":1,"order_level":1,"needed_resources":{"wood":28800,"stone":36000,"iron":21600},"pop":60,"pop_tear_down":60},"statue":[],"oracle":[],"trade_office":[]};
+	var buildings_can_be_teared_down = true;
+
+	$(document).ready(function() {
+		UnitOverview.init(40764);
+		$('#info').mousePopup(new MousePopup('Mostra os movimentos de unidades e tropas.'));
+		$('#attack').mousePopup(new MousePopup('Mostra apenas os movimentos de tropas.'));
+		$('#trade').mousePopup(new MousePopup('Mostra apenas as actividades comerciais.'));
+		$('#powers').mousePopup(new MousePopup('Lançar um encantamento sobre esta cidade.'));
+		$('#build').mousePopup(new MousePopup('Construir edifícios nesta cidade.'));
+		UnitOverview.initPopups();
+	
+					$('#building_main_area_main').mousePopup(new MousePopup('Senado (nível 25)'));
+					$('#building_main_area_hide').mousePopup(new MousePopup('Gruta (nível 10)'));
+					$('#building_main_area_storage').mousePopup(new MousePopup('Armazém (nível 30)'));
+					$('#building_main_area_farm').mousePopup(new MousePopup('Quinta (nível 40)'));
+					$('#building_main_area_place').mousePopup(new MousePopup('Ágora (nível 1)'));
+					$('#building_main_area_lumber').mousePopup(new MousePopup('Serração (nível 40)'));
+					$('#building_main_area_stoner').mousePopup(new MousePopup('Pedreira (nível 40)'));
+					$('#building_main_area_ironer').mousePopup(new MousePopup('Mina de prata (nível 40)'));
+					$('#building_main_area_market').mousePopup(new MousePopup('Mercado (nível 30)'));
+					$('#building_main_area_docks').mousePopup(new MousePopup('Porto (nível 30)'));
+					$('#building_main_area_barracks').mousePopup(new MousePopup('Quartel (nível 12)'));
+					$('#building_main_area_wall').mousePopup(new MousePopup('Muralha (nível 25)'));
+					$('#building_main_area_academy').mousePopup(new MousePopup('Academia (nível 30)'));
+					$('#building_main_area_temple').mousePopup(new MousePopup('Templo (nível 25)'));
+					$('#building_main_area_thermal').mousePopup(new MousePopup('Termas (nível 1)'));
+					$('#building_main_area_tower').mousePopup(new MousePopup('Torre (nível 1)'));
+		
+		BuildingAnimation.init();
+	});
+	
+//]]>
+                        </script>
+
+
+                        <div style="position:absolute; background-image: url(http://static.grepolis.com/images/game/town/background.jpg); width:780px; height:465px;" id="town_background">
+                            <img id="index_main" src="http://static.grepolis.com/images/game/visual/main3.png" alt="Senado"/>
+                            <img id="index_hide" src="http://static.grepolis.com/images/game/visual/hide3.png" alt="Gruta"/>
+                            <img id="index_storage" src="http://static.grepolis.com/images/game/visual/storage3.png" alt="Armazém"/>
+                            <img id="index_farm" src="http://static.grepolis.com/images/game/visual/farm3.gif" alt="Quinta"/>
+                            <img id="index_place" src="http://static.grepolis.com/images/game/visual/place1.png" alt="Ágora"/>
+                            <img id="index_lumber" src="http://static.grepolis.com/images/game/visual/lumber3.gif" alt="Serração"/>
+                            <img id="index_stoner" src="http://static.grepolis.com/images/game/visual/stoner3.gif" alt="Pedreira"/>
+                            <img id="index_ironer" src="http://static.grepolis.com/images/game/visual/ironer3.png" alt="Mina de prata"/>
+                            <img id="index_market" src="http://static.grepolis.com/images/game/visual/market3.png" alt="Mercado"/>
+                            <img id="index_docks" src="http://static.grepolis.com/images/game/visual/docks3.gif" alt="Porto"/>
+                            <img id="index_barracks" src="http://static.grepolis.com/images/game/visual/barracks2.png" alt="Quartel"/>
+                            <img id="index_wall" src="http://static.grepolis.com/images/game/visual/wall3.png" alt="Muralha"/>
+                            <img id="index_academy" src="http://static.grepolis.com/images/game/visual/academy3.png" alt="Academia"/>
+                            <img id="index_temple" src="http://static.grepolis.com/images/game/visual/temple3.gif" alt="Templo"/>
+                            <img id="index_thermal" src="http://static.grepolis.com/images/game/visual/thermal1.png" alt="Termas"/>
+                            <img id="index_tower" src="http://static.grepolis.com/images/game/visual/tower1.png" alt="Torre"/>	
+                            <img class="empty" src="http://static.grepolis.com/images/transparent.png" alt="" usemap="#map_town"/>
+                            <map name="map_town" id="map_town">
+                                <area shape="poly" id="building_main_area_main" coords="323,144,317,180,399,213,498,140,482,112,413,85" href="/game/building_main?town_id=40764&amp;action=index&amp;h=44059048f44" alt="Senado" />
+                                <area shape="poly" id="building_main_area_hide" coords="408,306,394,314,394,332,402,343,420,335,419,314" href="/game/building_hide?town_id=40764&amp;action=index&amp;h=44059048f44" alt="Gruta" />
+                                <area shape="poly" id="building_main_area_storage" coords="307,192,279,210,279,239,371,281,400,259,394,220,355,203,345,209" href="/game/building_storage?town_id=40764&amp;action=index&amp;h=44059048f44" alt="Armazém" />
+                                <area shape="poly" id="building_main_area_farm" coords="387,0,443,86,505,123,563,139,599,106,599,0" href="/game/building_farm?town_id=40764&amp;action=index&amp;h=44059048f44" alt="Quinta" />
+                                <area shape="poly" id="building_main_area_place" coords="469,179,446,218,452,238,488,238,496,218" href="/game/building_place?town_id=40764&amp;action=index&amp;h=44059048f44" alt="Ágora" />
+                                <area shape="poly" id="building_main_area_lumber" coords="454,357,429,386,451,451,522,462,564,395,519,375" href="/game/building_lumber?town_id=40764&amp;action=index&amp;h=44059048f44" alt="Serração" />
+                                <area shape="poly" id="building_main_area_stoner" coords="0,178,0,303,66,333,183,312,189,249,66,229,59,178" href="/game/building_stoner?town_id=40764&amp;action=index&amp;h=44059048f44" alt="Pedreira" />
+                                <area shape="poly" id="building_main_area_ironer" coords="52,12,41,35,85,81,132,56,89,20" href="/game/building_ironer?town_id=40764&amp;action=index&amp;h=44059048f44" alt="Mina de prata" />
+                                <area shape="poly" id="building_main_area_market" coords="599,159,561,142,504,153,501,183,519,223,554,236,599,233" href="/game/building_market?town_id=40764&amp;action=index&amp;h=44059048f44" alt="Mercado" />
+                                <area shape="poly" id="building_main_area_docks" coords="270,303,166,408,260,462,342,462,400,384" href="/game/building_docks?town_id=40764&amp;action=index&amp;h=44059048f44" alt="Porto" />
+                                <area shape="poly" id="building_main_area_barracks" coords="186,96,92,183,133,201,190,207,265,161,260,135" href="/game/building_barracks?town_id=40764&amp;action=index&amp;h=44059048f44" alt="Quartel" />
+                                <area shape="poly" id="building_main_area_wall" coords="0,151, 26,151, 72,145, 78,170, 87,185, 107,199, 136,206, 170,208, 201,215, 239,210, 243,266, 278,263, 314,274, 350,287, 384,284, 416,270, 442,254, 439,305, 495,332, 529,345, 568,346, 601,342,
+			601,368, 566,375, 521,373, 484,363, 433,333, 421,297, 386,307, 348,312, 309,302, 277,290, 230,291, 228,237, 199,239, 169,231, 136,228, 104,227, 77,205, 70,191, 69,168, 28,176, 0,176" href="/game/building_wall?town_id=40764&amp;action=index&amp;h=44059048f44" alt="Muralha" />
+                                <area shape="poly" id="building_main_area_academy" coords="334,0,293,22,277,76,346,103,402,67,383,16" href="/game/building_academy?town_id=40764&amp;action=index&amp;h=44059048f44" alt="Academia" />
+                                <area shape="poly" id="building_main_area_temple" coords="20,52,2,70,2,124,40,139,85,131,49,57" href="/game/building_temple?town_id=40764&amp;action=index&amp;h=44059048f44" alt="Templo" />
+                                <area shape="poly" id="building_main_area_thermal" coords="141,40,143,62,200,87,277,46,276,18,217,0" href="/game/building_thermal?town_id=40764&amp;action=index&amp;h=44059048f44" alt="Termas" />
+                                <area shape="poly" id="building_main_area_tower" coords="511,244,489,264,486,320,501,335,534,340,556,324,559,265,539,246" href="/game/building_tower?town_id=40764&amp;action=index&amp;h=44059048f44" alt="Torre" />
+                            </map>
+                        </div>
+                        <div class="units" id="units_overview">
+                            <div id="unit_info_tab_window_bg">
+                                <ul id="unit_overview_tabs">
+                                    <li>
+                                        <a href="#info" id="info">
+                                            <span class="info_tab_flag" ></span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#attack" id="attack">
+                                            <span class="info_tab_flag" style="background-position:0 -32px;"></span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#trade" id="trade">
+                                            <span class="info_tab_flag" style="background-position:0 -64px;"></span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#powers" id="powers">
+                                            <span class="info_tab_flag" style="background-position:0 -96px;"></span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#build" id="build">
+                                            <span class="info_tab_flag" style="background-position:0 -128px;"></span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div id="unit_info_tab_window_bgs" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
+                                    <div id="units_info_tab" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+                                        <script type="text/javascript">
+//<![CDATA[
+
+	var confirm_cancel_dialog;
+	var cancel_trade_id;
+	
+	function cancel_trade(trade_id) {
+		cancel_trade_id = trade_id;
+		confirm_cancel_dialog.open();
+		return false;
+	}
+		$(document).ready(function() {
+		UnitOverview.unit_movements = [{"type":"attack","command_name":"Atacar","arrival_at":1307977093,"arrival_eta":3386,"arrival_seconds_left":3386,"id":15312054,"incoming":true,"town":{"id":13257,"name":"DILLERFOREVER 03","name_short":"DILLERFO..."}},{"type":"attack","command_name":"Atacar","arrival_at":1307977608,"arrival_eta":3901,"arrival_seconds_left":3901,"id":15312050,"incoming":true,"town":{"id":17414,"name":"DILLERFOREVER 01","name_short":"DILLERFO..."}},{"type":"attack","command_name":"Atacar","arrival_at":1307979225,"arrival_eta":5518,"arrival_seconds_left":5518,"id":15312070,"incoming":true,"town":{"id":61342,"name":"DILLERFOREVER 10","name_short":"DILLERFO..."}}];
+		UnitOverview.spying = [];
+		UnitOverview.conqueror_units = [];
+		UnitOverview.colonization_commands = [];
+					UnitOverview.revolts_beyond_arising = [];
+			UnitOverview.revolts_beyond_running = [];
+			UnitOverview.revolts_in_town_arising = [];
+			UnitOverview.revolts_in_town_running = [];
+				UnitOverview.trades = null;
+		UnitOverview.militia = {"town_id":40764,"started_at":1307968485,"finished_at":1307979285,"eta":5578,"units":375};
+		UnitOverview.startCountdown();
+		CommandInfo.has_praised_god = true;
+				
+		confirm_cancel_dialog = new Dialog({
+			title: 'Cancelar comércio',
+			text: 'Tem a certeza de que pretende cancelar este comércio?',
+			button_yes: {
+				title: 'Sim',
+				callback_function: function () {
+					UnitOverview.cancelTrade(cancel_trade_id);
+					return confirm_cancel_dialog.close();
+				}
+			},
+			button_no: {
+				title: 'Não',
+				callback_function: function () {
+					return confirm_cancel_dialog.close();
+				}
+			}
+		});
+			});
+//]]>
+                                        </script>
+
+                                        <div style="clear: both"></div>
+
+                                        <div class="tab_content tab_content_scrollable">
+                                            <ul id="unit_movements">
+                                                <li class="attack incoming">
+                                                    <br style="clear:both;" />
+                                                    <div class="unit_movements_arrow" style="background-image: url(http://static.grepolis.com/images/game/unit_overview/arrow_left.png)"></div>
+                                                    <img class="command_type" alt="Atacar hoje às 11:58 horas" src="http://static.grepolis.com/images/game/unit_overview/attack_incoming.png" style="float: left;" />
+                                                    <div class="unit_movements_arrow" ></div>
+                                                    <div class="unit_movements_time">
+                                                        <span class="eta" id="eta-command-15312054">0:56:26</span>
+                                                        <br />
+                                                        <a href="javascript:void(0)" id="command_15312054" title="DILLERFOREVER 03">DILLERFO...</a>
+                                                    </div>
+                                                </li>
+                                                <li class="attack incoming">
+                                                    <br style="clear:both;" />
+                                                    <div class="unit_movements_arrow" style="background-image: url(http://static.grepolis.com/images/game/unit_overview/arrow_left.png)"></div>
+                                                    <img class="command_type" alt="Atacar hoje às 12:06 horas" src="http://static.grepolis.com/images/game/unit_overview/attack_incoming.png" style="float: left;" />
+                                                    <div class="unit_movements_arrow" ></div>
+                                                    <div class="unit_movements_time">
+                                                        <span class="eta" id="eta-command-15312050">1:05:01</span>
+                                                        <br />
+                                                        <a href="javascript:void(0)" id="command_15312050" title="DILLERFOREVER 01">DILLERFO...</a>
+                                                    </div>
+                                                </li>
+                                                <li class="attack incoming">
+                                                    <br style="clear:both;" />
+                                                    <div class="unit_movements_arrow" style="background-image: url(http://static.grepolis.com/images/game/unit_overview/arrow_left.png)"></div>
+                                                    <img class="command_type" alt="Atacar hoje às 12:33 horas" src="http://static.grepolis.com/images/game/unit_overview/attack_incoming.png" style="float: left;" />
+                                                    <div class="unit_movements_arrow" ></div>
+                                                    <div class="unit_movements_time">
+                                                        <span class="eta" id="eta-command-15312070">1:31:58</span>
+                                                        <br />
+                                                        <a href="javascript:void(0)" id="command_15312070" title="DILLERFOREVER 10">DILLERFO...</a>
+                                                    </div>
+                                                </li>
+                                            </ul>
+	
+	
+	
+	
+                                            <div id="conqueror_units">
+                                            </div>
+	
+		
+		
+	
+                                            <div id="units_land">
+                                                <strong>Unidades</strong>
+                                                <br />
+                                                <div class="index_unit bold" id="sword" style="background-image: url(http://static.grepolis.com/images/game/units/sword_40x40.png)">
+                                                    <span class="black">351</span>
+                                                    <span>351</span>
+                                                </div>			
+                                                <div class="index_unit bold" id="archer" style="background-image: url(http://static.grepolis.com/images/game/units/archer_40x40.png)">
+                                                    <span class="black">506</span>
+                                                    <span>506</span>
+                                                </div>			
+                                                <div class="index_unit bold" id="hoplite" style="background-image: url(http://static.grepolis.com/images/game/units/hoplite_40x40.png)">
+                                                    <span class="black">200</span>
+                                                    <span>200</span>
+                                                </div>			
+                                                <div class="index_unit bold" id="chariot" style="background-image: url(http://static.grepolis.com/images/game/units/chariot_40x40.png)">
+                                                    <span class="black">8</span>
+                                                    <span>8</span>
+                                                </div>			
+                                            </div>
+		
+                                            <div id="units_sea" >
+                                                <strong>Navios</strong>
+                                                <br />
+                                                <div class="index_unit bold" id="big_transporter" style="background-image: url(http://static.grepolis.com/images/game/units/big_transporter_40x40.png)">
+                                                    <span class="black">40</span>
+                                                    <span>40</span>
+                                                </div>			
+                                                <div class="index_unit bold" id="bireme" style="background-image: url(http://static.grepolis.com/images/game/units/bireme_40x40.png)">
+                                                    <span class="black">394</span>
+                                                    <span>394</span>
+                                                </div>			
+                                                <div class="index_unit bold" id="small_transporter" style="background-image: url(http://static.grepolis.com/images/game/units/small_transporter_40x40.png)">
+                                                    <span class="black">13</span>
+                                                    <span>13</span>
+                                                </div>			
+                                            </div>
+	
+		
+                                            <div id="units_land">
+                                                <strong>Milícia</strong>
+                                                <br />
+                                                <div class="index_unit bold" id="militia" style="background-image: url(http://static.grepolis.com/images/game/units/militia_40x40.png)">
+                                                    <span class="black">375</span>
+                                                    <span>375</span>
+                                                </div>			
+                                                <span id="militia_countdown" class="eta">1:32:58</span>
+                                                <br />
+                                            </div>	
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="confirm_dialog">
+                            <h3 id="confirm_dialog_title"></h3>
+                            <div id="main_text_area">
+                                <p id="confirm_dialog_text"></p>
+                                <div style="margin-left: 35px;">
+                                    <a class="button"  href="#" onclick="void(0)" style="cursor:pointer;display:inline;">
+                                        <span class="left">
+                                            <span class="right">
+                                                <span class="middle">Sim</span>
+                                            </span>
+                                        </span>
+                                        <span style="clear:both;"></span>
+                                    </a>			
+                                    <div style="float: left; width: 10px; height: 10px;"></div>
+                                    <a class="button"  href="#" onclick="void(0)" style="cursor:pointer;display:inline;">
+                                        <span class="left">
+                                            <span class="right">
+                                                <span class="middle">Não</span>
+                                            </span>
+                                        </span>
+                                        <span style="clear:both;"></span>
+                                    </a>			
+                                    <div style="clear: both;"></div>
+                                </div>	
+                            </div>
+                        </div>            			            			
+				    	
+                    </div>
+                </div>
+            </div>
+							
+            <a href="#" class="report_translation">
+                <span>Tradução incorrecta? Clique aqui!</span>
+            </a>
+
+            <script type="text/html" id="report_translation_dialog_tmpl">
+	/*<![CDATA[*/
+    <div id="new_window_top"></div>
+    <div id="new_window_left"></div>
+    <div id="new_window_right"></div>
+    <div id="new_window_bottom"></div>
+    <div id="new_window_content">
+		<div class="new_window_content_content"></div>
+	</div>
+	/*]]>*/
+            </script>
+
+			
+            <div id="server_time" class="small"></div>
+        </div>
+
+		
+        <div class="dock-outer1">
+            <div class="dock-outer2">
+                <div class="dock">
+                    <div id="chat-border">
+                        <div class="top border">
+                            <div class="left socket"></div>
+                            <a id="chat-control-resize" href="#">&nbsp;</a>
+                            <div class="right socket"></div>
+                        </div>
+                        <div class="left border"></div>
+                        <div class="right border"></div>
+
+                        <div class="bottom border">
+                            <div class="left socket"></div>
+                            <div class="right socket"></div>
+                        </div>
+		
+                        <div class="chat">
+                            <div id="main-chat-controls" class="chat-controls bold">
+                                <span class="title">Chat</span>
+				
+                                <span id="chat-control-onoff" class="chat-control">
+                                    <a href="#">&nbsp;</a>
+                                </span>
+                                <span id="chat-control-clear" class="chat-control">
+                                    <a href="#">&nbsp;</a>
+                                </span>
+                                <span id="chat-control-dock" class="chat-control">
+                                    <a href="#">&nbsp;</a>
+                                </span>
+                                <span id="chat-control-toggle" class="chat-control">
+                                    <a href="#">&nbsp;</a>
+                                </span>
+                            </div>
+			
+                            <div class="chat-elements">
+                                <div class="chat-elements-l">
+                                    <div id="chat-history-bg">
+                                        <div id="chat-history-bg-left">
+                                            <div id="chat-history">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <form id="chat-form-message">
+                                        <textarea name="chat-message-text" id="chat-message-text" rows='1' cols='70'></textarea>
+                                    </form>
+                                </div>
+                                <div class="chat-elements-r">
+                                    <div id="chat-roominfo"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <script type="text/javascript">
+					// initialize chat in page load
+			$(document).ready(function(){
+				Chat.init();
+			});
+                    </script>
+                </div>
+            </div>
+        </div>
+        <script type="text/html" id="town_info_tmpl">
+	/*<![CDATA[*/
+    <div id="new_window_top"></div>
+    <div id="new_window_left"></div>
+    <div id="new_window_right"></div>
+    <div id="new_window_bottom"></div>
+    <div id="new_window_content">
+    	<div id="info_tab_window_bg">
+    	    <a class="cancel" href="#" onclick="TownInfo.close(); return false;"/>
+		    <ul id="town_info_tabs">
+		    	<li><a href="#info"><img src="http://static.grepolis.com/images/game/towninfo/info.png" class="info_tab_flag"/></a></li>
+		    	<li id="town_info_tab_support">
+					<a href="#attack" id="town_support_count" class="info_tab_flag"></a>
+		    	<li id="town_info_tab_attack">
+					<a id="town_attack_count" href="#attack" class="info_tab_flag"></a>
+				</li>
+		    	<li><a href="#trading"><img src="http://static.grepolis.com/images/game/towninfo/trade.png" class="info_tab_flag"/></a></li>
+		    	<li><a href="#god"><img src="http://static.grepolis.com/images/game/towninfo/powers.png" class="info_tab_flag"/></a></li>
+		    	<li id="town_info_tab_espionage">
+					<a id="town_espionage_count" href="#espionage" class="info_tab_flag"></a>
+				</li>
+		    </ul>
+		</div>
+	</div>
+	/*]]>*/
+        </script>
+        <script type="text/html" id="farm_town_info_tmpl">
+	/*<![CDATA[*/
+    <div id="new_window_top"></div>
+    <div id="new_window_left"></div>
+    <div id="new_window_right"></div>
+    <div id="new_window_bottom"></div>
+    <div id="new_window_content">
+    	<div id="info_tab_window_bg">
+    	    <a class="cancel" href="#" onclick="TownInfo.close(); Tutorial.calculateNextStep(12345); return false;"/>
+		    <ul id="farm_town_info_tabs">
+		    	<li><a href="#info"><img src="http://static.grepolis.com/images/game/towninfo/info.png" class="info_tab_flag"/></a></li>
+		    	<li id="town_info_tab_attack">
+					<a id="town_attack_count" href="#attack" onclick="Tutorial.close(); Tutorial.calculateNextStep(54321);"></a>
+				</li>
+		    	<li><a href="#trading"><img src="http://static.grepolis.com/images/game/towninfo/trade.png" class="info_tab_flag"/></a></li>
+		    </ul>
+		</div>
+	</div>
+	/*]]>*/	
+        </script>
+        <script type="text/html" id="command_info_tmpl">
+	/*<![CDATA[*/
+    <div id="new_window_top"></div>
+    <div id="new_window_left"></div>
+    <div id="new_window_right"></div>
+    <div id="new_window_bottom"></div>
+    <div id="new_window_content">
+    	<div id="info_tab_window_bg">
+    	    <a class="cancel" href="#" onclick="CommandInfo.close(); return false;"/>
+		    <ul id="command_info_tabs">
+		    	<li><a class="test" href="#info"><img src="http://static.grepolis.com/images/game/towninfo/info.png" class="info_tab_flag"/></a></li>
+		    	<li><a href="#god"><img src="http://static.grepolis.com/images/game/towninfo/powers.png" class="info_tab_flag"/></a></li>
+		    </ul>
+		</div>
+	</div>
+	/*]]>*/
+        </script>
+
+        <script type="text/html" id="conqueror_info_tmpl">
+	/*<![CDATA[*/
+    <div id="new_window_top"></div>
+    <div id="new_window_left"></div>
+    <div id="new_window_right"></div>
+    <div id="new_window_bottom"></div>
+    <div id="new_window_content">
+    	<div id="info_tab_window_bg">
+    	    <a class="cancel" href="#" onclick="ConquerorInfo.close(); return false;"/>
+		    <ul id="conqueror_info_tabs">
+		    	<li><a class="test" href="#info"><img src="http://static.grepolis.com/images/game/towninfo/info.png" class="info_tab_flag"/></a></li>
+		    	<li><a href="#movements"><img src="http://static.grepolis.com/images/game/towninfo/siege.png" class="info_tab_flag"/></a></li>
+		    </ul>
+		</div>
+	</div>
+	/*]]>*/
+        </script>
+
+        <script type="text/html" id="tutorial_tmpl">
+	/*<![CDATA[*/
+	<div id="tutorial_top">
+		<div id="tutorial_window_arrows">
+			<a class="tutorial_hide tutorial_button" href="javascript:void(0)" onclick="Tutorial.close()"></a>
+			<a class="tutorial_close tutorial_button" href="javascript:void(0)" onclick="Tutorial.disable()"></a>
+		</div>
+    	<h4 id="tutorial_window_title"></h4>	
+	</div>
+	<div id="tutorial_content">
+		<p id="tutorial_window_subcontent">
+			<span id="tutorial_guy"></span>
+		</p>
+		<a id="tutorial_window_prev_link" class="tutorial_prev tutorial_button" href="javascript:void(0)" onclick="Tutorial.previous()"></a>
+		<a id="tutorial_window_next_link" class="tutorial_next tutorial_button" href="javascript:void(0)" onclick="Tutorial.next()"></a>
+	</div>
+
+	<div id="tutorial_bottom"></div>
+	/*]]>*/
+        </script>
+
+        <script type="text/javascript">
+//<![CDATA[
+           
+	Tutorial.tutorial = false;
+	Tutorial.max_step_id = 30;
+	Tutorial.step_id = false;
+	$(document).ready(Tutorial.show);
+
+//]]>
+        </script>
+        <script type="text/html" id="uninhabited_place_info_tmpl">
+	/*<![CDATA[*/
+    <div id="new_window_top"></div>
+    <div id="new_window_left"></div>
+    <div id="new_window_right"></div>
+    <div id="new_window_bottom"></div>
+    <div id="new_window_content">
+    	<div id="info_tab_window_bg">
+    	    <a class="cancel" href="#" onclick="UninhabitedPlaceInfo.close(); return false;"/>
+		    <ul id="uninhabited_place_info_tabs">
+		    	<li><a href="#info"><img src="http://static.grepolis.com/images/game/towninfo/info.png" class="info_tab_flag"/></a></li>
+		    	<li><a href="#settle"><img src="http://static.grepolis.com/images/game/towninfo/found.png" class="info_tab_flag"/></a></li>
+		    </ul>
+		</div>
+	</div>
+	/*]]>*/
+        </script>
+
+        <table class="popup" id="popup_div" cellpadding="0" cellspacing="0">
+            <tr class="popup_top">
+                <td class="popup_top_left"></td>
+                <td class="popup_top_middle"></td>
+                <td class="popup_top_right"></td>
+            </tr>
+            <tr>
+                <td class="popup_middle_left"></td>
+                <td class="popup_middle_middle" id="popup_content"></td>
+                <td class="popup_middle_right"></td>
+            </tr>
+            <tr class="popup_bottom">
+                <td class="popup_bottom_left"></td>
+                <td class="popup_bottom_middle"></td>
+                <td class="popup_bottom_right"></td>
+            </tr>
+        </table>
+        <div id="town_link_clicked_menu" style="display:none; clear:both;">
+            <table class="bb_popup" id="bb_popup_div" cellpadding="0" cellspacing="0">
+                <tr class="bb_popup_top">
+                    <td class="bb_popup_top_left"></td>
+                    <td class="bb_popup_top_middle"></td>
+                    <td class="bb_popup_top_right"></td>
+                </tr>
+                <tr>
+                    <td class="bb_popup_middle_left"></td>
+                    <td class="bb_popup_middle_middle">
+                        <a href="">Para o mapa</a>
+                        <br />
+                        <a href="">Mostrar informação da cidade</a>
+                        <br />
+                        <a href="">Visão da cidade</a>
+                    </td>
+                    <td class="bb_popup_middle_right"></td>
+                </tr>
+                <tr class="bb_popup_bottom">
+                    <td class="bb_popup_bottom_left"></td>
+                    <td class="bb_popup_bottom_middle"></td>
+                    <td class="bb_popup_bottom_right"></td>
+                </tr>
+            </table>
+        </div>
+		
+        <script type="text/javascript">
+				var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+				document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        </script>
+        <script type="text/javascript">
+				try {
+					var pageTracker = _gat._getTracker("UA-13215943-13");
+					pageTracker._trackPageview();
+				} catch(err) {}
+        </script>
+			<!-- Google Code for Players in Grepolis Remarketing List --> 
+        <script type="text/javascript"> 
+/* <![CDATA[ */ 
+var google_conversion_id = 1026023037; 
+var google_conversion_language = "en"; 
+var google_conversion_format = "3"; 
+var google_conversion_color = "666666"; 
+var google_conversion_label = "3jsJCKun7QEQ_byf6QM"; 
+var google_conversion_value = 0; 
+/* ]]> */ 
+        </script> 
+        <script type="text/javascript" src="http://www.googleadservices.com/pagead/conversion.js"> 
+        </script> 
+        <noscript> 
+            <div style="display:inline;"> 
+                <img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1026023037/?label=3jsJCKun7QEQ_byf6QM&amp;guid=ON&amp;script=0"/> 
+            </div> 
+        </noscript>    
+    </body>
+</html>
